@@ -22,7 +22,11 @@ jobs:
         run: cd terraform
 
       - name: List Terraform Directory Contents
-        run: ls -la
+        run: |
+          ls -la
+          cd terraform
+          echo "Terraform files"
+          ls -la
 
       # Set up Terraform
       - name: Setup Terraform
