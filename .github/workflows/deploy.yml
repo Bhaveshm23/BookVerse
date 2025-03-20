@@ -25,8 +25,8 @@ jobs:
 #      - name: Change to Terraform Directory
 #        run: cd terraform
 
-      - name: List Terraform Directory Contents
-        run: ls -la terraform
+#      - name: List Terraform Directory Contents
+#        run: ls -la terraform
 
       # Set up Terraform
       - name: Setup Terraform
