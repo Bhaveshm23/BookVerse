@@ -11,6 +11,7 @@ jobs:
     name: Deploy Infrastructure
     runs-on: ubuntu-latest
 
+    # defualt working directory as terraform
     defaults:
       run:
         working-directory: terraform
@@ -19,14 +20,6 @@ jobs:
       # Checkout the repository code
       - name: Checkout Code
         uses: actions/checkout@v4
-
-
-#      # Change to the directory with .tf files
-#      - name: Change to Terraform Directory
-#        run: cd terraform
-
-#      - name: List Terraform Directory Contents
-#        run: ls -la terraform
 
       # Set up Terraform
       - name: Setup Terraform
