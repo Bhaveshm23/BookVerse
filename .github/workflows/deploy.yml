@@ -11,6 +11,10 @@ jobs:
     name: Deploy Infrastructure
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: terraform
+
     steps:
       # Checkout the repository code
       - name: Checkout Code
@@ -22,11 +26,7 @@ jobs:
         run: cd terraform
 
       - name: List Terraform Directory Contents
-        run: |
-          ls -la
-          cd terraform
-          echo "Terraform files"
-          ls -la
+        run: ls -la terraform
 
       # Set up Terraform
       - name: Setup Terraform
