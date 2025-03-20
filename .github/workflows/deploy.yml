@@ -16,6 +16,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+
+      # Change to the directory with .tf files
+      - name: Change to Terraform Directory
+        run: cd terraform
+
+      - name: List Terraform Directory Contents
+        run: ls -la
+
       # Set up Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
