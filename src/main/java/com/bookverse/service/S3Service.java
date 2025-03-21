@@ -24,7 +24,6 @@ public class S3Service {
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bookCoverBucketName)
                 .key(key)
-                .acl("public-read")
                 .build();
         log.info("Uploading to S3: bucket={}, key={}", bookCoverBucketName, key);
 

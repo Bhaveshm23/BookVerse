@@ -108,9 +108,6 @@ resource "aws_security_group" "tf_ec2_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 #s3 access from ec2
@@ -128,9 +125,7 @@ resource "aws_iam_role" "ec2_s3_role" {
       }
     ]
   })
-  lifecycle {
-    prevent_destroy = true
-  }
+
 }
 
 resource "aws_iam_role_policy" "ec2_s3_policy" {

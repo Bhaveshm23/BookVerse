@@ -1,8 +1,6 @@
 resource "aws_s3_bucket" "tf_bookverse_covers_s3" {
   bucket = "bookverse-cover-images"
-  lifecycle {
-    prevent_destroy = true
-  }
+
 }
 
 resource "aws_s3_bucket_public_access_block" "bookverse_covers_block" {
