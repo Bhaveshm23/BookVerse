@@ -11,8 +11,9 @@ document.getElementById('bookForm').addEventListener('submit', async (event) => 
 
     const title = document.getElementById('title').value;
     const author = document.getElementById('author').value;
-    const publishedDate = document.getElementById('date').value;
+    const publishedDate = document.getElementById('publishedDate').value;
     const coverImage = document.getElementById('coverImage').files[0];
+    console.log(title + " "+ author + " "+ publishedDate +" "+ coverImage);
 
     const book = {
         title: title,
@@ -20,7 +21,7 @@ document.getElementById('bookForm').addEventListener('submit', async (event) => 
         publishedDate: publishedDate
     };
 
-    await addBook(book, coverImage); // Updated to include coverImage
+    await addBook(book, coverImage);
 });
 
 // Function to fetch books from the API
