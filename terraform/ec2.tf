@@ -65,7 +65,7 @@ resource "aws_instance" "tf_ec2_instance" {
               echo "Application started in background. Check /home/ubuntu/app.log for runtime logs."
               EOF
 
-  user_data_replace_on_change = true
+  user_data_replace_on_change = false
 
   tags = {
     Name = "SpringBoot Application"
@@ -107,6 +107,10 @@ resource "aws_security_group" "tf_ec2_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 #s3 access from ec2
@@ -124,6 +128,9 @@ resource "aws_iam_role" "ec2_s3_role" {
       }
     ]
   })
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_iam_role_policy" "ec2_s3_policy" {
