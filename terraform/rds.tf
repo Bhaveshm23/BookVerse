@@ -29,7 +29,7 @@ resource "aws_security_group" "tf_rds_sg" {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
-    cidr_blocks     = [var.local_ip]
+#    cidr_blocks     = [var.local_ip]
     security_groups = [aws_security_group.tf_ec2_sg.id]
   }
 
