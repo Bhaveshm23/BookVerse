@@ -1,4 +1,3 @@
-// Base URL for the API (relative since it’s served by Spring Boot)
 const API_URL = '/api/books';
 
 // Fetch and display books on page load
@@ -7,47 +6,72 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Handle form submission
-document.getElementById('bookForm').addEventListener('submit', (event) => {
+document.getElementById('bookForm').addEventListener('submit', async (event) => {
     event.preventDefault();
 
+    const title = document.getElementById('title').value;
+    const author = document.getElementById('author').value;
+    const publishedDate = document.getElementById('date').value;
+    const coverImage = document.getElementById('coverImage').files[0];
+
     const book = {
-        title: document.getElementById('title').value,
-        author: document.getElementById('author').value,
-        publishedDate: document.getElementById('date').value
+        title: title,
+        author: author,
+        publishedDate: publishedDate
     };
 
-    addBook(book);
+    await addBook(book, coverImage); // Updated to include coverImage
 });
 
 // Function to fetch books from the API
 function fetchBooks() {
     fetch(API_URL)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to fetch books');
+            return response.json();
+        })
         .then(books => {
             const bookList = document.getElementById('bookList');
-            bookList.innerHTML = ''; // Clear existing list
+            bookList.innerHTML = '';
             books.forEach(book => {
                 const li = document.createElement('li');
-                li.textContent = `${book.title} by ${book.author}  published on: ${book.publishedDate})`;
+                li.textContent = `${book.title} by ${book.author} (Published: ${book.publishedDate})`;
+                if (book.coverImageUrl) {
+                    const img = document.createElement('img');
+                    img.src = book.coverImageUrl;
+                    img.alt = `${book.title} cover`;
+                    img.style.maxWidth = '100px';
+                    li.appendChild(img);
+                }
                 bookList.appendChild(li);
             });
         })
         .catch(error => console.error('Error fetching books:', error));
 }
 
-// Function to add a new book
-function addBook(book) {
-    fetch(API_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(book)
-    })
-        .then(response => response.json())
-        .then(() => {
-            fetchBooks(); // Refresh the list
-            document.getElementById('bookForm').reset(); // Clear the form
-        })
-        .catch(error => console.error('Error adding book:', error));
+// Function to add a new book with optional cover image
+async function addBook(book, coverImage) {
+    const formData = new FormData();
+    formData.append('book', new Blob([JSON.stringify(book)], { type: 'application/json' }));
+    if (coverImage) {
+        formData.append('coverImage', coverImage);
+    }
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Failed to add book: ${errorText}`);
+        }
+
+        await response.json();
+        fetchBooks(); // Refresh the list
+        document.getElementById('bookForm').reset(); // Clear the form
+    } catch (error) {
+        console.error('Error adding book:', error);
+    }
 }

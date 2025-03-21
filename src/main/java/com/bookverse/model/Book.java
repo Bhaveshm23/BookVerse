@@ -19,5 +19,6 @@ public class Book {
     private String title;
     private String author;
     private Date publishedDate;
+    private String coverImageUrl;
 
 }

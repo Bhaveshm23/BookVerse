@@ -13,6 +13,7 @@ resource "aws_instance" "tf_ec2_instance" {
   associate_public_ip_address = true
   key_name                    = var.key_name
   vpc_security_group_ids      = [aws_security_group.tf_ec2_sg.id]
+  iam_instance_profile        = aws_iam_instance_profile.ec2_s3_profile.name
   user_data                   = <<-EOF
               #!/bin/bash
               exec > /home/ubuntu/setup.log 2>&1
@@ -107,6 +108,44 @@ resource "aws_security_group" "tf_ec2_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+#s3 access from ec2
+resource "aws_iam_role" "ec2_s3_role" {
+  name = "ec2-s3-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "ec2_s3_policy" {
+  name   = "ec2-s3-policy"
+  role   = aws_iam_role.ec2_s3_role.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["s3:PutObject", "s3:GetObject"]
+        Resource = "${aws_s3_bucket.tf_bookverse_covers_s3.arn}/*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_instance_profile" "ec2_s3_profile" {
+  name = "ec2-s3-profile"
+  role = aws_iam_role.ec2_s3_role.name
+}
+
 
 output "ec2_public_ip" {
   value = "ssh -i ~/.ssh/${var.key_name}.pem ubuntu@${aws_instance.tf_ec2_instance.public_ip}"
