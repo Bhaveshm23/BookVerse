@@ -5,6 +5,12 @@ terraform {
       version = "5.91.0"
     }
   }
+
+  backend "s3" {
+    bucket = "tf-bookverse-state"
+    key    = "terraform.tfstate"
+    region = "us-east-1"
+  }
 }
 
 provider "aws" {
